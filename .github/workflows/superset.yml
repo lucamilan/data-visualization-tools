@@ -1,5 +1,8 @@
 name: build-superset
-on: push
+on:
+  push:
+    paths:
+      - superset/**
 jobs:
   test:
     runs-on: ubuntu-latest

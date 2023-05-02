@@ -1,5 +1,8 @@
 name: build-redash
-on: push
+on:
+  push:
+    paths:
+      - redash/**
 jobs:
   test:
     runs-on: ubuntu-latest
