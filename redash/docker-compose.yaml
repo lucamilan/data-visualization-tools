@@ -12,7 +12,7 @@ x-common-variables:
   REDASH_MAIL_PASSWORD: ""
   REDASH_MAIL_SERVER: smtp4dev
   REDASH_MAIL_PORT: 25
-  REDASH_MAIL_USE_TLS: false
+  REDASH_MAIL_USE_TLS: "false"
   REDASH_MAIL_DEFAULT_SENDER: support@example.com
 
 services:
