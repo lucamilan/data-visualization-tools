@@ -11,7 +11,7 @@ cd redash
 docker compose up -d --build 
 ```
 
-Wait for tsk completing and open: <http://locahost:5000>
+Wait for task completition and after open: <http://locahost:5000>
 
 ## Superset
 
