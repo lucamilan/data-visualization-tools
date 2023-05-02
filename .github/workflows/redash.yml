@@ -1,0 +1,11 @@
+name: build-redash
+on: push
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./redash/docker-compose.yaml"
+          down-flags: "--volumes"
