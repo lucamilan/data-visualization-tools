@@ -1,6 +1,6 @@
 # Power BI Alternatives
 
-Play with some data visualization tools
+Let's play with some data visualization tools
 
 ## Redash
 
