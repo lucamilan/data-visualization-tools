@@ -4,8 +4,8 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build the stack
-        run: docker-compose -f "superset\docker-compose.yaml" up -d --build 
-      - name: Destroy the stack
-        run: docker-compose -f "superset\docker-compose.yaml" down
+      - uses: actions/checkout@v3
+      - uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./superset/docker-compose.yml"
+          down-flags: "--volumes"
