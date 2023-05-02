@@ -1,4 +1,4 @@
-# data-visualization-tools
+# Power BI Alternatives 
 
 Play with some data visualization tools
 
