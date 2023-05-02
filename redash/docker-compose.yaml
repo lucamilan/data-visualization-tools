@@ -1,0 +1,96 @@
+version: '3.4'
+
+x-common-variables:
+  &common-variables
+  PYTHONUNBUFFERED: 0
+  REDASH_ADDITIONAL_QUERY_RUNNERS: "redash.query_runner.python"
+  REDASH_LOG_LEVEL: "INFO"
+  REDASH_REDIS_URL: "redis://redis:6379/0"
+  REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+  REDASH_COOKIE_SECRET: "9b5fbbae-d97a-4184-9712-a5047989d8c6"
+  REDASH_MAIL_USERNAME: ""
+  REDASH_MAIL_PASSWORD: ""
+  REDASH_MAIL_SERVER: smtp4dev
+  REDASH_MAIL_PORT: 25
+  REDASH_MAIL_USE_TLS: false
+  REDASH_MAIL_DEFAULT_SENDER: support@example.com
+
+services:
+  smtp4dev:
+    image: rnwood/smtp4dev:v3
+    container_name: smtp4dev
+    hostname: smtp4dev
+    restart: always
+    volumes:
+      - smtp4dev-data:/smtp4dev
+    ports:
+      - '5001:80'
+      - '25:25'
+      - '143:143'
+  mongodb:
+    image: mongo:4.4
+    container_name: mongodb
+    restart: on-failure
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    volumes:
+      - ./mongodb/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+  mongodb-seed:
+    image: mongo:4.4
+    container_name: mongodb-seed
+    depends_on:
+      - mongodb
+    volumes:
+      - ./mongodb/seed:/mongo-seed
+    command: /mongo-seed/import.sh
+  redis:
+    image: redis:latest
+    container_name: redis
+    ports:
+      - 6379:6379
+  postgres:
+    image: postgres:11.10
+    container_name: postgres
+    environment:
+      POSTGRES_PASSWORD: "password"
+      POSTGRES_HOST_AUTH_METHOD: "trust"
+    volumes:
+      - ./postgres:/var/lib/postgresql/data
+  redash-server-init:
+    image: redash/redash:latest
+    container_name: redash-server-init
+    command: bash -c "./manage.py database create_tables"
+    environment:
+      <<: *common-variables
+    depends_on:
+      - redash-server
+  redash-server:
+    image: redash/redash:latest
+    container_name: redash-server
+    command: >
+      server  bash -c "./manage.py database create_tables"
+    ports:
+      - 5000:5000
+    environment:
+      <<: *common-variables
+    depends_on:
+      - postgres
+      - redis
+  redash-worker:
+    image: redash/redash:latest
+    container_name: redash-worker
+    command: scheduler
+    environment:
+      <<: *common-variables
+      QUEUES: "queries,scheduled_queries,celery"
+      WORKERS_COUNT: 2
+    depends_on:
+      - postgres
+      - redis
+      - redash-server
+
+volumes:
+  smtp4dev-data:
