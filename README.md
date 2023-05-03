@@ -11,7 +11,7 @@ cd redash
 docker compose up -d --build 
 ```
 
-Wait for task completition and after open: <http://locahost:5000>
+Wait for task completion and after open: <http://locahost:5000>
 
 ## Superset
 
@@ -25,4 +25,4 @@ docker compose up -d --build
 docker-compose exec superset superset-demo
 ```
 
-Wait for tsk completing and open: <http://locahost:8088>
+Wait for task completion and after open:<http://locahost:8088>
